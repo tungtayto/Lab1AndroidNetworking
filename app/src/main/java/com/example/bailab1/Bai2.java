@@ -34,7 +34,11 @@ public class Bai2 extends AppCompatActivity implements View.OnClickListener {
         btnLoadEx2 = (Button) findViewById(R.id.btnLoadEx2);
 
         btnLoadEx2.setOnClickListener(this);
+
+        Button btnBack = findViewById(R.id.btn_back);
+        btnBack.setOnClickListener(this);
     }
+
     private Handler messageHandler = new Handler() {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -46,7 +50,7 @@ public class Bai2 extends AppCompatActivity implements View.OnClickListener {
         }
     };
 
-    private Bitmap downloadBitmap(String link) {
+    public static Bitmap downloadBitmap(String link) {
         try {
             URL url1 = new URL(link);
             HttpURLConnection connection = (HttpURLConnection) url1.openConnection();
@@ -62,20 +66,43 @@ public class Bai2 extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        progressDialog = ProgressDialog.show(Bai2.this, "", "Downloading ...");
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                bitmap = downloadBitmap(url);
-                Message msg = messageHandler.obtainMessage();
-                Bundle bundle = new Bundle();
-                String threadMessage = "Image downloaded";
-                bundle.putString("message", threadMessage);
-                msg.setData(bundle);
-                messageHandler.sendMessage(msg);
-            }
-        };
-        Thread myThread = new Thread(runnable);
-        myThread.start();
+
+        if (view.getId() == R.id.btnLoadEx2) {
+            progressDialog = ProgressDialog.show(Bai2.this, "", "Downloading ...");
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    bitmap = downloadBitmap(url);
+
+
+                    Message msg = messageHandler.obtainMessage();
+                    Bundle bundle = new Bundle();
+                    String threadMessage = "Image downloaded";
+                    bundle.putString("message", threadMessage);
+                    bundle.putParcelable("bitmap", bitmap);
+
+                    msg.setData(bundle);
+                    messageHandler.sendMessage(msg);
+
+                }
+            };
+            Thread myThread = new Thread(runnable);
+            myThread.start();
+        } else if (view.getId() == R.id.btn_back) {
+
+            Message msg2 = MainActivity2.handler.obtainMessage();
+
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("bitmap", bitmap);
+
+            msg2.setData(bundle);
+
+            MainActivity2.handler.sendMessage(msg2);
+
+            finish();
+            //onBackPressed();
+        }
+
+
     }
 }

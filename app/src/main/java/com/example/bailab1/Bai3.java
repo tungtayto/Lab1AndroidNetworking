@@ -3,14 +3,17 @@ package com.example.bailab1;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class Bai3 extends AppCompatActivity implements View.OnClickListener, Listener {
+public class Bai3 extends AppCompatActivity implements View.OnClickListener {
     private ImageView imgLoad;
     private TextView tvMsg;
     private Button btnLoadEx3;
@@ -30,17 +33,51 @@ public class Bai3 extends AppCompatActivity implements View.OnClickListener, Lis
 
     @Override
     public void onClick(View view) {
-        new LoadImageTask(this, this).execute(IMAGE_URL);
+        //new LoadImageTask(this, this).execute(IMAGE_URL);
+
+        new LoadImageTask().execute(IMAGE_URL);
     }
 
-    @Override
-    public void onImageLoaded(Bitmap bitmap) {
-        imgLoad.setImageBitmap(bitmap);
-        tvMsg.setText("Image Downloaded!");
+    class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
+
+
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+
+            Bitmap bitmap = Bai2.downloadBitmap(strings[0]);
+
+            return bitmap;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = new ProgressDialog(Bai3.this);
+            progressDialog.show();
+
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+
+            imgLoad.setImageBitmap(bitmap);
+        }
     }
 
-    @Override
-    public void onError() {
-        tvMsg.setText("Error download image!");
-    }
+//    @Override
+//    public void onImageLoaded(Bitmap bitmap) {
+//        imgLoad.setImageBitmap(bitmap);
+//        tvMsg.setText("Image Downloaded!");
+//    }
+
+//    @Override
+//    public void onError() {
+//        tvMsg.setText("Error download image!");
+//    }
 }

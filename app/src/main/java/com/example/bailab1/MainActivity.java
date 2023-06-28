@@ -24,7 +24,9 @@ import java.net.URL;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private ImageView imgLoad;
     private TextView tvMsg;
-    private String url = "https://ap.poly.edu.vn/images/logo.png";
+    private String url = "https://caodang.fpt.edu.vn/wp-content/uploads/anhcover-01.jpg";
+
+    // Unable to resolve host "ap.poly.edu.vn": No address associated with hostname
 
     private Bitmap bitmap = null;
     private ProgressDialog progressDialog;
@@ -41,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnLoadEx1 = (Button) findViewById(R.id.btnLoadEx1);
 
         btnLoadEx1.setOnClickListener(this);
+
+
     }
 
     private Bitmap loadImageFromNetWork(String link) {
@@ -61,13 +65,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void run() {
                 final Bitmap bitmap = loadImageFromNetWork(url);
-                imgLoad.post(new Runnable() {
+
+                runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         tvMsg.setText("Image Downloaded!");
                         imgLoad.setImageBitmap(bitmap);
                     }
                 });
+
             }
         });
         thread.start();

@@ -3,15 +3,21 @@ package com.example.bailab1;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 public class MainActivity2 extends AppCompatActivity {
     private Button btnEx1;
     private Button btnEx2;
     private Button btnEx3;
     private Button btnEx4;
+
+    static ImageView ivBanner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +28,23 @@ public class MainActivity2 extends AppCompatActivity {
         btnEx2 = (Button) findViewById(R.id.btnEx2);
         btnEx3 = (Button) findViewById(R.id.btnEx3);
         btnEx4 = (Button) findViewById(R.id.btnEx4);
+
+        ivBanner = findViewById(R.id.iv);
     }
+
+    public static Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            Bundle bundle = msg.getData();
+            Bitmap bitmap = bundle.getParcelable("bitmap");
+            if (bitmap != null) {
+                ivBanner.setImageBitmap(bitmap);
+            }
+
+        }
+    };
+
     public  void Bai1 (View view){
         Intent intent = new Intent(MainActivity2.this,MainActivity.class);
         startActivity(intent);
